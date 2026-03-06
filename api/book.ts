@@ -244,44 +244,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
     ])
 
-    // ── 2. Événement Google Calendar via Service Account ─────────────
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key:  (process.env.GOOGLE_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
-      },
-      scopes: ['https://www.googleapis.com/auth/calendar'],
-    })
-
-    const calendar = google.calendar({ version: 'v3', auth })
-    const { start, end } = parseSlot(data.selectedSlot)
-
-    await calendar.events.insert({
-      calendarId: process.env.GOOGLE_CALENDAR_ID ?? 'primary',
-      requestBody: {
-        summary:     `Audit Uptide — ${data.firstName} (${data.companyName})`,
-        description: [
-          `Client : ${data.firstName} — ${data.companyName}`,
-          `Email  : ${data.email}`,
-          `Tél    : ${data.phone || '—'}`,
-          '',
-          `Structure : ${STRUCTURE_LABELS[data.structureType] ?? data.structureType}`,
-          `Équipe    : ${TEAM_LABELS[data.teamSize] ?? data.teamSize}`,
-          `Défi      : ${CHALLENGE_LABELS[data.mainChallenge] ?? data.mainChallenge}`,
-          `Timing    : ${TIMING_LABELS[data.timing] ?? data.timing}`,
-        ].join('\n'),
-        start:     { dateTime: start.toISOString(), timeZone: 'Europe/Paris' },
-        end:       { dateTime: end.toISOString(),   timeZone: 'Europe/Paris' },
-        attendees: [{ email: data.email, displayName: `${data.firstName} (${data.companyName})` }],
-        reminders: {
-          useDefault: false,
-          overrides:  [
-            { method: 'email', minutes: 60 },
-            { method: 'popup', minutes: 15 },
-          ],
+    // ── 2. Événement Google Calendar via Service Account (optionnel) ──
+    if (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+      const auth = new google.auth.GoogleAuth({
+        credentials: {
+          client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+          private_key:  (process.env.GOOGLE_PRIVATE_KEY ?? '').replace(/\\n/g, '\n'),
         },
-      },
-    })
+        scopes: ['https://www.googleapis.com/auth/calendar'],
+      })
+
+      const calendar = google.calendar({ version: 'v3', auth })
+      const { start, end } = parseSlot(data.selectedSlot)
+
+      await calendar.events.insert({
+        calendarId: process.env.GOOGLE_CALENDAR_ID ?? 'primary',
+        requestBody: {
+          summary:     `Audit Uptide — ${data.firstName} (${data.companyName})`,
+          description: [
+            `Client : ${data.firstName} — ${data.companyName}`,
+            `Email  : ${data.email}`,
+            `Tél    : ${data.phone || '—'}`,
+            '',
+            `Structure : ${STRUCTURE_LABELS[data.structureType] ?? data.structureType}`,
+            `Équipe    : ${TEAM_LABELS[data.teamSize] ?? data.teamSize}`,
+            `Défi      : ${CHALLENGE_LABELS[data.mainChallenge] ?? data.mainChallenge}`,
+            `Timing    : ${TIMING_LABELS[data.timing] ?? data.timing}`,
+          ].join('\n'),
+          start:     { dateTime: start.toISOString(), timeZone: 'Europe/Paris' },
+          end:       { dateTime: end.toISOString(),   timeZone: 'Europe/Paris' },
+          attendees: [{ email: data.email, displayName: `${data.firstName} (${data.companyName})` }],
+          reminders: {
+            useDefault: false,
+            overrides:  [
+              { method: 'email', minutes: 60 },
+              { method: 'popup', minutes: 15 },
+            ],
+          },
+        },
+      })
+    }
 
     return res.status(200).json({ success: true })
 
