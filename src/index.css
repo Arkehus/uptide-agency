@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-uptide-dark: #0A3041;
+  --color-uptide-blue: #165F8B;
+  --color-uptide-cyan: #00D8FF;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #0A3041;
+  color: white;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Hero animations ─────────────────────────────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes word-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) rotateX(-40deg);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes word-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px) rotateX(40deg);
+    filter: blur(4px);
+  }
+}
+
+@keyframes underline-draw {
+  from {
+    stroke-dashoffset: 300;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0.7;
+  }
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%       { transform: translateY(6px); opacity: 0.9; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-down {
+  animation: fade-down 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-word-in {
+  animation: word-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-word-out {
+  animation: word-out 0.35s cubic-bezier(0.55, 0, 0.45, 1) both;
+}
+
+.animate-underline {
+  stroke-dasharray: 300;
+  animation: underline-draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.4s both;
+}
+
+.animate-scroll-bounce {
+  animation: scroll-bounce 1.8s ease-in-out infinite;
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity  0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* directional variants */
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition:
+    opacity  0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition:
+    opacity  0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Bento checklist item stagger ─────────────────────────────── */
+@keyframes item-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.bento-item-in {
+  animation: item-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Progress bar fill ─────────────────────────────────────────── */
+@keyframes bar-fill {
+  from { width: 0%; }
+}
+.bar-fill {
+  animation: bar-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Counter count-up (CSS only, clamp trick) ──────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(0,216,255,0.3); }
+  50%       { text-shadow: 0 0 40px rgba(0,216,255,0.7), 0 0 80px rgba(0,216,255,0.3); }
+}
+.glow-text {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── Tab content enter ─────────────────────────────────────────── */
+@keyframes tab-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tab-enter {
+  animation: tab-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Bar chart rise (vertical bars) ───────────────────────────── */
+@keyframes bar-rise {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
